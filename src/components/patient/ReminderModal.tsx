@@ -13,7 +13,7 @@ interface ReminderModalProps {
 
 export const ReminderModal: React.FC<ReminderModalProps> = ({ log, onClose }) => {
   const { markMedicineTaken, skipMedicineDose } = useHealth();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
 
   useEffect(() => {
     if (log) {
@@ -36,23 +36,23 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({ log, onClose }) =>
       // 2. Speech Synthesis Announcement
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const text = `Reminder: Time to take your medicine ${log.medicineName} ${log.dosage}.`;
+        const text = `${t('medicine.nextDose')}: ${log.medicineName} ${log.dosage}.`;
         const utterance = new SpeechSynthesisUtterance(text);
         if (language === 'te') utterance.lang = 'te-IN';
         else if (language === 'hi') utterance.lang = 'hi-IN';
-        else utterance.lang = 'en-IN';
+        else utterance.lang = 'en-US';
         window.speechSynthesis.speak(utterance);
       }
 
       // 3. Browser Notification if permitted
       if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(`Medicine Reminder: ${log.medicineName}`, {
-          body: `Time: ${log.scheduledTime} — ${log.dosage}`,
+        new Notification(`${t('medicine.nextDose')}: ${log.medicineName}`, {
+          body: `${t('common.time')}: ${log.scheduledTime} — ${log.dosage}`,
           icon: '/favicon.svg',
         });
       }
     }
-  }, [log, language]);
+  }, [log, language, t]);
 
   if (!log) return null;
 
@@ -67,7 +67,7 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({ log, onClose }) =>
   };
 
   const handleSnooze = (minutes: number) => {
-    alert(`Reminder snoozed for ${minutes} minutes.`);
+    alert(`Snoozed ${minutes}m`);
     onClose();
   };
 
@@ -94,31 +94,31 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({ log, onClose }) =>
           </div>
 
           <span className="px-3 py-1 text-xs font-bold rounded-full bg-sunken text-accent-secondary border border-hairline uppercase tracking-wider">
-            ⏰ Scheduled Reminder • {log.scheduledTime}
+            ⏰ {t('medicine.scheduledTime')} • {log.scheduledTime}
           </span>
 
           <h3 className="text-3xl font-heading font-bold text-primary mt-3 mb-1">
             {log.medicineName}
           </h3>
           <p className="text-lg text-secondary font-medium mb-4">
-            Dosage: <strong className="text-primary">{log.dosage}</strong> (After Food)
+            {t('medicine.dosage')}: <strong className="text-primary">{log.dosage}</strong> ({t('medicine.afterFood')})
           </p>
 
           <div className="p-3 bg-sunken rounded-2xl border border-hairline text-xs text-muted mb-6">
-            ℹ️ Browser notifications work while this tab is open. Background alarms require native mobile app support.
+            ℹ️ {t('notifications.title')}
           </div>
 
           <div className="space-y-3">
             <Button variant="primary" size="lg" fullWidth onClick={handleTake} className="bg-status-safe text-white font-bold text-lg">
-              <CheckIcon size={22} /> Mark as Taken
+              <CheckIcon size={22} /> {t('medicine.takeMedicine')}
             </Button>
 
             <div className="grid grid-cols-2 gap-2">
               <Button variant="secondary" size="md" onClick={() => handleSnooze(10)}>
-                ⏱️ Snooze 10m
+                ⏱️ 10m
               </Button>
               <Button variant="secondary" size="md" onClick={handleSkip}>
-                Skip Dose
+                {t('medicine.skipMedicine')}
               </Button>
             </div>
           </div>

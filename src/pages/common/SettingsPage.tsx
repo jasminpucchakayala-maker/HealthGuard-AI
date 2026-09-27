@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useHealth } from '../../context/HealthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Header } from '../../components/layout/Header';
 import { BottomNav } from '../../components/layout/BottomNav';
 import { SidebarNav } from '../../components/layout/SidebarNav';
@@ -12,6 +13,7 @@ import { Link } from 'react-router-dom';
 export const SettingsPage: React.FC = () => {
   const { logout, userRole, switchRole } = useAuth();
   const { accessibility, toggleAccessibility } = useHealth();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-canvas text-primary flex">
@@ -22,28 +24,28 @@ export const SettingsPage: React.FC = () => {
 
         <main className="max-w-4xl mx-auto px-4 py-6 w-full space-y-6">
           <div>
-            <h2 className="text-3xl font-heading font-bold text-primary">App Settings</h2>
-            <p className="text-secondary text-sm mt-1">Preferences, accessibility, theme & legal compliance.</p>
+            <h2 className="text-3xl font-heading font-bold text-primary">{t('settings.title')}</h2>
+            <p className="text-secondary text-sm mt-1">{t('settings.general')}</p>
           </div>
 
           {/* Theme & Language Controls */}
           <div className="bg-surface border border-hairline rounded-[24px] p-6 shadow-xs space-y-4">
             <h3 className="font-heading font-bold text-lg text-primary border-b border-hairline pb-2">
-              Appearance & Localization
+              {t('settings.general')}
             </h3>
 
             <div className="flex items-center justify-between py-2 border-b border-hairline">
               <div>
-                <span className="font-semibold text-sm text-primary block">Color Theme</span>
-                <span className="text-xs text-secondary">Switch between Light Ivory and Dark Forest Teal palette.</span>
+                <span className="font-semibold text-sm text-primary block">{t('settings.theme')}</span>
+                <span className="text-xs text-secondary">{t('settings.lightTheme')} / {t('settings.darkTheme')}</span>
               </div>
               <ThemeToggle />
             </div>
 
             <div className="flex items-center justify-between py-2">
               <div>
-                <span className="font-semibold text-sm text-primary block">App Language</span>
-                <span className="text-xs text-secondary">Supports English, Telugu, and Hindi surfaces.</span>
+                <span className="font-semibold text-sm text-primary block">{t('settings.language')}</span>
+                <span className="text-xs text-secondary">{t('settings.selectLanguage')}</span>
               </div>
               <LanguageSelector />
             </div>
@@ -52,13 +54,13 @@ export const SettingsPage: React.FC = () => {
           {/* Accessibility Mode (Section 31) */}
           <div className="bg-surface border border-hairline rounded-[24px] p-6 shadow-xs space-y-4">
             <h3 className="font-heading font-bold text-lg text-primary border-b border-hairline pb-2">
-              Accessibility Mode Controls
+              {t('settings.fontScale')}
             </h3>
 
             <div className="flex items-center justify-between py-2 border-b border-hairline">
               <div>
-                <span className="font-semibold text-sm text-primary block">Large Font Scale</span>
-                <span className="text-xs text-secondary">Enlarge text size & touch targets for easier reading.</span>
+                <span className="font-semibold text-sm text-primary block">{t('settings.fontScale')}</span>
+                <span className="text-xs text-secondary">{t('settings.fontScale')}</span>
               </div>
               <input
                 type="checkbox"
@@ -70,8 +72,8 @@ export const SettingsPage: React.FC = () => {
 
             <div className="flex items-center justify-between py-2 border-b border-hairline">
               <div>
-                <span className="font-semibold text-sm text-primary block">High Contrast Mode</span>
-                <span className="text-xs text-secondary">Strengthen border definitions and status contrast.</span>
+                <span className="font-semibold text-sm text-primary block">{t('settings.theme')}</span>
+                <span className="text-xs text-secondary">{t('settings.theme')}</span>
               </div>
               <input
                 type="checkbox"
@@ -83,8 +85,8 @@ export const SettingsPage: React.FC = () => {
 
             <div className="flex items-center justify-between py-2">
               <div>
-                <span className="font-semibold text-sm text-primary block">Reduce Decorative Motion</span>
-                <span className="text-xs text-secondary">Disable ambient pulse loops; retain functional state animations.</span>
+                <span className="font-semibold text-sm text-primary block">{t('settings.notifications')}</span>
+                <span className="text-xs text-secondary">{t('settings.notifications')}</span>
               </div>
               <input
                 type="checkbox"
@@ -98,26 +100,26 @@ export const SettingsPage: React.FC = () => {
           {/* Legal Compliance Links (Section 0 Tells 26 & 27) */}
           <div className="bg-surface border border-hairline rounded-[24px] p-6 shadow-xs space-y-3">
             <h3 className="font-heading font-bold text-lg text-primary border-b border-hairline pb-2">
-              Privacy & Data Policy
+              {t('privacy.title')}
             </h3>
 
             <div className="flex items-center justify-between py-2 border-b border-hairline">
               <div>
-                <span className="font-semibold text-sm text-primary block">Privacy Policy & Live Permissions</span>
-                <span className="text-xs text-secondary">Manage location, microphone, and analytics permissions.</span>
+                <span className="font-semibold text-sm text-primary block">{t('privacy.title')}</span>
+                <span className="text-xs text-secondary">{t('privacy.section1Title')}</span>
               </div>
               <Link to="/privacy" className="text-xs text-accent-primary font-bold hover:underline">
-                View Policy ↗
+                {t('common.details')} ↗
               </Link>
             </div>
 
             <div className="flex items-center justify-between py-2">
               <div>
-                <span className="font-semibold text-sm text-primary block">Terms of Service & Data Use</span>
-                <span className="text-xs text-secondary">Healthcare support disclaimer and user agreement.</span>
+                <span className="font-semibold text-sm text-primary block">{t('terms.title')}</span>
+                <span className="text-xs text-secondary">{t('terms.section1Title')}</span>
               </div>
               <Link to="/terms" className="text-xs text-accent-primary font-bold hover:underline">
-                View Terms ↗
+                {t('common.details')} ↗
               </Link>
             </div>
           </div>
@@ -125,15 +127,15 @@ export const SettingsPage: React.FC = () => {
           {/* Account Actions */}
           <div className="bg-surface border border-hairline rounded-[24px] p-6 shadow-xs space-y-3">
             <h3 className="font-heading font-bold text-lg text-primary border-b border-hairline pb-2">
-              Account Controls
+              {t('auth.title')}
             </h3>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
               <Button variant="secondary" size="md" fullWidth onClick={switchRole}>
-                Switch Role for Demo ({userRole === 'patient' ? 'Caregiver' : 'Patient'})
+                {t('auth.patientRole')} / {t('auth.caregiverRole')}
               </Button>
               <Button variant="danger" size="md" fullWidth onClick={logout}>
-                Log Out
+                {t('common.logout')}
               </Button>
             </div>
           </div>

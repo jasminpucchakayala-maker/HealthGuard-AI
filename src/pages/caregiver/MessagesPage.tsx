@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHealth } from '../../context/HealthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { SidebarNav } from '../../components/layout/SidebarNav';
 import { Header } from '../../components/layout/Header';
 import { Button } from '../../components/common/Button';
@@ -7,6 +8,7 @@ import { VoiceIcon } from '../../components/common/Icons';
 
 export const MessagesPage: React.FC = () => {
   const { voiceMessages, sendCaregiverTextReply, sendVoiceMessage, patient } = useHealth();
+  const { language, t } = useLanguage();
   const [textInput, setTextInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
@@ -29,7 +31,8 @@ export const MessagesPage: React.FC = () => {
     setTimeout(() => {
       clearInterval(timer);
       setIsRecording(false);
-      sendVoiceMessage('Amma, please take your afternoon Metformin tablet after lunch.', 5);
+      const msg = language === 'te' ? 'దయచేసి సమయానికి మందు తీసుకోండి.' : language === 'hi' ? 'कृपया समय पर दवा लें।' : 'Please remember to take your afternoon tablet.';
+      sendVoiceMessage(msg, 5);
     }, 4000);
   };
 
@@ -37,7 +40,9 @@ export const MessagesPage: React.FC = () => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-IN';
+      if (language === 'te') utterance.lang = 'te-IN';
+      else if (language === 'hi') utterance.lang = 'hi-IN';
+      else utterance.lang = 'en-US';
       window.speechSynthesis.speak(utterance);
     }
   };
@@ -51,15 +56,15 @@ export const MessagesPage: React.FC = () => {
 
         <main className="max-w-4xl mx-auto px-4 py-6 w-full space-y-6">
           <div>
-            <h2 className="text-3xl font-heading font-bold text-primary">Voice & Text Messages</h2>
-            <p className="text-secondary text-sm mt-1">Exchange quick voice notes and messages with {patient.name}.</p>
+            <h2 className="text-3xl font-heading font-bold text-primary">{t('messages.title')}</h2>
+            <p className="text-secondary text-sm mt-1">{t('messages.searchPlaceholder')} ({patient.name})</p>
           </div>
 
           {/* Voice Note Recorder Card (Section 21) */}
           <div className="bg-surface border border-hairline rounded-[24px] p-6 shadow-xs text-center">
-            <h3 className="font-heading font-bold text-lg text-primary mb-2">Record Voice Note for Patient</h3>
+            <h3 className="font-heading font-bold text-lg text-primary mb-2">{t('assistant.title')}</h3>
             <p className="text-xs text-secondary mb-4">
-              Hold or tap to record audio. Uses MediaRecorder with live waveform.
+              {t('assistant.tapToSpeak')}
             </p>
 
             <div className="flex items-center justify-center my-4">
@@ -71,7 +76,7 @@ export const MessagesPage: React.FC = () => {
                 }`}
               >
                 <VoiceIcon size={32} />
-                <span className="text-[10px] mt-1">{isRecording ? `${recordingSeconds}s` : 'Record'}</span>
+                <span className="text-[10px] mt-1">{isRecording ? `${recordingSeconds}s` : t('assistant.tapToSpeak')}</span>
               </button>
             </div>
 
@@ -87,7 +92,7 @@ export const MessagesPage: React.FC = () => {
 
           {/* Messages History List */}
           <div className="bg-surface border border-hairline rounded-[24px] p-6 shadow-xs space-y-4">
-            <h3 className="font-heading font-bold text-xl text-primary border-b border-hairline pb-3">Message Thread</h3>
+            <h3 className="font-heading font-bold text-xl text-primary border-b border-hairline pb-3">{t('messages.title')}</h3>
 
             {voiceMessages.map((msg) => (
               <div
@@ -111,7 +116,7 @@ export const MessagesPage: React.FC = () => {
                     onClick={() => speakMessage(msg.transcription)}
                     className="text-accent-primary font-bold hover:underline"
                   >
-                    🔊 Read Aloud
+                    🔊 {t('assistant.title')}
                   </button>
                 </div>
 
@@ -127,11 +132,11 @@ export const MessagesPage: React.FC = () => {
                 type="text"
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
-                placeholder="Type a message or reminder..."
+                placeholder={t('messages.typeMessage')}
                 className="flex-1 p-3 rounded-2xl bg-sunken border border-hairline text-primary text-sm focus:outline-none"
               />
               <Button variant="primary" size="md" type="submit" className="bg-accent-primary">
-                Send Reply
+                {t('messages.send')}
               </Button>
             </form>
           </div>

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,6 +17,8 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   maxWidth = 'max-w-lg',
 }) => {
+  const { t } = useLanguage();
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -56,8 +59,8 @@ export const Modal: React.FC<ModalProps> = ({
                 <h3 className="text-xl font-heading font-semibold text-primary">{title}</h3>
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-full text-secondary hover:bg-sunken hover:text-primary transition-colors"
-                  aria-label="Close Modal"
+                  className="p-2 rounded-full text-secondary hover:bg-sunken hover:text-primary transition-colors cursor-pointer"
+                  aria-label={t('common.close')}
                 >
                   ✕
                 </button>

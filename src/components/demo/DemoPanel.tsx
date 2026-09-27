@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHealth } from '../../context/HealthContext';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Button } from '../common/Button';
 
 export const DemoPanel: React.FC = () => {
@@ -21,6 +22,7 @@ export const DemoPanel: React.FC = () => {
     setActiveReminder,
   } = useHealth();
   const { switchRole } = useAuth();
+  const { t } = useLanguage();
 
   const handleSimulateFall = () => {
     setShowFallModal(true);
@@ -63,9 +65,9 @@ export const DemoPanel: React.FC = () => {
           onClick={() => setIsOpen(!isOpen)}
           className="px-3 py-1.5 rounded-full bg-accent-secondary text-white font-bold text-xs shadow-lg hover:opacity-90 flex items-center gap-1.5 cursor-pointer"
         >
-          <span>⚡ Demo Controls</span>
+          <span>⚡ {t('demo.title')}</span>
           <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full">
-            {isOpen ? 'Close' : 'Open'}
+            {isOpen ? t('common.close') : t('common.edit')}
           </span>
         </button>
       </div>
@@ -80,12 +82,12 @@ export const DemoPanel: React.FC = () => {
             className="fixed top-32 right-4 z-40 w-80 bg-surface border border-hairline rounded-[24px] shadow-2xl p-4 text-xs text-primary space-y-3"
           >
             <div className="flex items-center justify-between pb-2 border-b border-hairline">
-              <span className="font-heading font-bold text-sm text-primary">Prototype Demo Toolbar</span>
-              <span className="px-2 py-0.5 rounded-full bg-sunken text-secondary text-[10px]">Active</span>
+              <span className="font-heading font-bold text-sm text-primary">{t('demo.title')}</span>
+              <span className="px-2 py-0.5 rounded-full bg-sunken text-secondary text-[10px]">{t('common.active')}</span>
             </div>
 
             <p className="text-secondary leading-tight">
-              Mutate real app state to test both Patient and Caregiver workflows in real time.
+              {t('demo.subtitle')}
             </p>
 
             <div className="grid grid-cols-2 gap-2">
@@ -93,7 +95,7 @@ export const DemoPanel: React.FC = () => {
                 onClick={handleTriggerReminder}
                 className="p-2 rounded-xl bg-sunken hover:bg-surface border border-hairline font-semibold text-primary text-left cursor-pointer"
               >
-                ⏰ Trigger Reminder
+                ⏰ {t('medicine.nextDose')}
               </button>
               <button
                 onClick={() => {
@@ -102,7 +104,7 @@ export const DemoPanel: React.FC = () => {
                 }}
                 className="p-2 rounded-xl bg-sunken hover:bg-surface border border-hairline font-semibold text-primary text-left cursor-pointer"
               >
-                ✅ Mark Taken
+                ✅ {t('medicine.takeMedicine')}
               </button>
               <button
                 onClick={() => {
@@ -111,13 +113,13 @@ export const DemoPanel: React.FC = () => {
                 }}
                 className="p-2 rounded-xl bg-sunken hover:bg-surface border border-hairline font-semibold text-primary text-left text-status-warn cursor-pointer"
               >
-                ⚠️ Missed Dose
+                ⚠️ {t('demo.simulateMissed')}
               </button>
               <button
                 onClick={() => triggerSOS('sos_button')}
                 className="p-2 rounded-xl bg-status-danger/10 hover:bg-status-danger/20 border border-status-danger/30 font-semibold text-status-danger text-left cursor-pointer"
               >
-                🚨 Trigger SOS
+                🚨 {t('demo.simulateSos')}
               </button>
               <button
                 onClick={handleSimulateFall}
@@ -137,19 +139,19 @@ export const DemoPanel: React.FC = () => {
                   isOffline ? 'bg-status-warn/10 border-status-warn text-status-warn' : 'bg-sunken border-hairline text-primary'
                 }`}
               >
-                {isOffline ? '🟢 Go Online' : '🟠 Go Offline'}
+                {isOffline ? '🟢 Online' : '🟠 Offline'}
               </button>
               <button
                 onClick={switchRole}
                 className="p-2 rounded-xl bg-accent-primary/10 border border-accent-primary/30 font-semibold text-accent-primary text-left cursor-pointer"
               >
-                🔄 Switch Role
+                🔄 {t('demo.quickRole')}
               </button>
             </div>
 
             {/* Location selector */}
             <div>
-              <label className="block text-secondary font-medium mb-1">Set Patient Location:</label>
+              <label className="block text-secondary font-medium mb-1">{t('sos.locationShared')}:</label>
               <div className="grid grid-cols-3 gap-1">
                 <button
                   onClick={() => handleChangeLocation('Banjara Hills, Hyderabad', 17.385, 78.4867)}
@@ -177,7 +179,7 @@ export const DemoPanel: React.FC = () => {
                 onClick={resetDemoData}
                 className="text-status-danger hover:underline font-semibold text-[11px] cursor-pointer"
               >
-                Reset All Demo Data
+                {t('demo.resetData')}
               </button>
             </div>
           </motion.div>
@@ -204,13 +206,13 @@ export const DemoPanel: React.FC = () => {
                 🤸
               </div>
               <span className="px-3 py-1 rounded-full bg-status-warn/20 text-status-warn font-bold text-xs uppercase tracking-wider">
-                Prototype Fall Simulation
+                {t('sos.title')}
               </span>
               <h3 className="text-2xl font-heading font-bold text-primary mt-2">
-                Possible Emergency Detected
+                {t('sos.statusTriggered')}
               </h3>
               <p className="text-secondary text-sm my-3">
-                Movement sensors detected a sudden fall impact. Are you okay?
+                {t('sos.pressToTrigger')}
               </p>
 
               <div className="w-20 h-20 rounded-full border-4 border-status-danger text-status-danger font-heading font-bold text-3xl flex items-center justify-center mx-auto my-4">
@@ -225,7 +227,7 @@ export const DemoPanel: React.FC = () => {
                   onClick={() => setShowFallModal(false)}
                   className="bg-status-safe text-white"
                 >
-                  I'm Okay! Cancel Alert
+                  {t('sos.cancelSos')}
                 </Button>
                 <Button
                   variant="danger"
@@ -236,7 +238,7 @@ export const DemoPanel: React.FC = () => {
                     triggerSOS('fall_detection');
                   }}
                 >
-                  🚨 Send SOS Now
+                  🚨 {t('sos.triggerButton')}
                 </Button>
               </div>
             </motion.div>

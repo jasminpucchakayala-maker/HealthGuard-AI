@@ -26,8 +26,8 @@ export const PatientDashboard: React.FC = () => {
       <main className="max-w-7xl mx-auto px-4 py-6">
         {/* Offline Banner if offline */}
         <div className="mb-4 text-xs font-semibold px-4 py-2 rounded-2xl bg-status-warn/10 border border-status-warn/30 text-status-warn flex items-center justify-between">
-          <span>🟢 System Status: Reminders active locally on your device.</span>
-          <span className="text-[10px] opacity-80">Adherence: {patient.adherencePercentage}%</span>
+          <span>🟢 {t('dashboard.subtitle')}</span>
+          <span className="text-[10px] opacity-80">{t('dashboard.adherenceRate')}: {patient.adherencePercentage}%</span>
         </div>
 
         {/* Bento Asymmetric Grid Layout (Section 3.6) */}
@@ -39,9 +39,9 @@ export const PatientDashboard: React.FC = () => {
             ) : (
               <Card className="p-8 text-center">
                 <SafeStatusIcon size={48} className="mx-auto mb-3 text-status-safe" />
-                <h3 className="text-2xl font-heading font-bold">All Doses Completed Today!</h3>
+                <h3 className="text-2xl font-heading font-bold">{t('medicine.emptyList')}</h3>
                 <p className="text-secondary text-sm mt-1">
-                  You have taken all scheduled medicines for today. Great job maintaining your health routines!
+                  {t('assistant.intentNextMedEmpty')}
                 </p>
               </Card>
             )}
@@ -65,10 +65,10 @@ export const PatientDashboard: React.FC = () => {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <MedicineIcon size={24} className="text-accent-secondary" />
-                <h3 className="font-heading font-bold text-xl text-primary">Today's Schedule</h3>
+                <h3 className="font-heading font-bold text-xl text-primary">{t('medicine.title')}</h3>
               </div>
               <span className="text-xs font-semibold text-secondary">
-                {completedCount}/{todayLogs.length} Doses Taken
+                {t('medicine.takenCount', { count: completedCount, total: todayLogs.length })}
               </span>
             </div>
 
@@ -84,25 +84,25 @@ export const PatientDashboard: React.FC = () => {
                     </div>
                     <div>
                       <h4 className="font-heading font-bold text-base text-primary">{log.medicineName}</h4>
-                      <p className="text-xs text-secondary">{log.dosage} • After Food</p>
+                      <p className="text-xs text-secondary">{log.dosage} • {t('medicine.afterFood')}</p>
                     </div>
                   </div>
 
                   <div>
                     {log.status === 'taken' ? (
                       <span className="px-3 py-1 rounded-full bg-status-safe/10 text-status-safe font-semibold text-xs border border-status-safe/30 flex items-center gap-1">
-                        <SafeStatusIcon size={14} /> Taken
+                        <SafeStatusIcon size={14} /> {t('common.taken')}
                       </span>
                     ) : log.status === 'skipped' ? (
                       <span className="px-3 py-1 rounded-full bg-status-warn/10 text-status-warn font-semibold text-xs border border-status-warn/30">
-                        Skipped
+                        {t('common.skipped')}
                       </span>
                     ) : (
                       <button
                         onClick={() => setActiveReminder(log)}
                         className="px-3 py-1.5 rounded-xl bg-accent-secondary text-white font-semibold text-xs hover:opacity-90"
                       >
-                        Take Now
+                        {t('medicine.takeMedicine')}
                       </button>
                     )}
                   </div>
@@ -116,7 +116,7 @@ export const PatientDashboard: React.FC = () => {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <CaregiverIcon size={24} className="text-accent-primary" />
-                <h3 className="font-heading font-semibold text-lg text-primary">{t('caregiver')}</h3>
+                <h3 className="font-heading font-semibold text-lg text-primary">{t('nav.caregiver')}</h3>
               </div>
 
               {patient.caregiverId ? (
@@ -131,22 +131,22 @@ export const PatientDashboard: React.FC = () => {
                     </div>
                   </div>
                   <div className="pt-2 border-t border-hairline flex items-center gap-2 text-xs text-status-safe font-medium">
-                    <SafeStatusIcon size={14} /> Remote Monitoring Active
+                    <SafeStatusIcon size={14} /> {t('common.active')}
                   </div>
                 </div>
               ) : (
                 <div className="p-4 rounded-2xl bg-status-warn/10 border border-status-warn/30 text-xs text-primary space-y-2">
                   <p className="font-medium text-status-warn flex items-center gap-1">
-                    <WarnStatusIcon size={16} /> No Caregiver Connected
+                    <WarnStatusIcon size={16} /> {t('caregiver.statusAttention')}
                   </p>
                   <p className="text-secondary">
-                    Connect a family member or caregiver to share adherence logs and emergency alerts.
+                    {t('caregiver.enterPatientCode')}
                   </p>
                   <Link
                     to="/patient/caregiver"
                     className="inline-block px-3 py-1.5 rounded-xl bg-accent-primary text-white font-semibold text-xs mt-1"
                   >
-                    Connect Caregiver Now
+                    {t('caregiver.connectButton')}
                   </Link>
                 </div>
               )}
@@ -154,7 +154,7 @@ export const PatientDashboard: React.FC = () => {
 
             <div className="mt-4 pt-3 border-t border-hairline text-center">
               <Link to="/patient/emergency-info" className="text-xs text-status-danger font-semibold hover:underline">
-                📄 View Standalone Emergency Info Card
+                📄 {t('nav.emergencyInfo')}
               </Link>
             </div>
           </div>

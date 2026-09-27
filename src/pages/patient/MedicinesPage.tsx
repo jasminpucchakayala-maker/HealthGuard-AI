@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHealth } from '../../context/HealthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Header } from '../../components/layout/Header';
 import { BottomNav } from '../../components/layout/BottomNav';
 import { Button } from '../../components/common/Button';
@@ -9,6 +10,7 @@ import type { Medicine } from '../../types';
 
 export const MedicinesPage: React.FC = () => {
   const { medicines, addMedicine, editMedicine, deleteMedicine } = useHealth();
+  const { t } = useLanguage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingMed, setEditingMed] = useState<Medicine | null>(null);
 
@@ -77,11 +79,11 @@ export const MedicinesPage: React.FC = () => {
       <main className="max-w-5xl mx-auto px-4 py-6">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-3xl font-heading font-bold text-primary">Medicine Management</h2>
-            <p className="text-secondary text-sm mt-1">Manage daily prescriptions, dosages, and timings.</p>
+            <h2 className="text-3xl font-heading font-bold text-primary">{t('medicine.title')}</h2>
+            <p className="text-secondary text-sm mt-1">{t('medicine.subtitle')}</p>
           </div>
           <Button variant="primary" size="md" onClick={openAddModal} className="bg-accent-secondary">
-            + Add Medicine
+            + {t('medicine.addMedicine')}
           </Button>
         </div>
 
@@ -101,7 +103,7 @@ export const MedicinesPage: React.FC = () => {
                     <div>
                       <h3 className="text-xl font-heading font-bold text-primary">{med.name}</h3>
                       <span className="text-xs font-semibold text-accent-secondary uppercase tracking-wider">
-                        {med.dosage} • {med.timingPreference.replace('_', ' ')}
+                        {med.dosage} • {med.timingPreference === 'after_food' ? t('medicine.afterFood') : med.timingPreference === 'before_food' ? t('medicine.beforeFood') : t('medicine.withFood')}
                       </span>
                     </div>
                   </div>
@@ -119,10 +121,10 @@ export const MedicinesPage: React.FC = () => {
 
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-hairline">
                 <Button variant="ghost" size="sm" onClick={() => openEditModal(med)}>
-                  ✏️ Edit
+                  ✏️ {t('common.edit')}
                 </Button>
                 <Button variant="ghost" size="sm" onClick={() => deleteMedicine(med.id)} className="text-status-danger">
-                  🗑️ Delete
+                  🗑️ {t('common.delete')}
                 </Button>
               </div>
             </div>
@@ -132,10 +134,10 @@ export const MedicinesPage: React.FC = () => {
         {medicines.length === 0 && (
           <div className="bg-surface border border-hairline rounded-[24px] p-8 text-center my-6">
             <MedicineIcon size={48} className="mx-auto mb-3 text-muted" />
-            <h3 className="text-xl font-heading font-bold text-primary mb-1">No Medicines Added Yet</h3>
-            <p className="text-secondary text-sm mb-4">Add your daily prescriptions to start receiving automated reminders.</p>
+            <h3 className="text-xl font-heading font-bold text-primary mb-1">{t('medicine.emptyList')}</h3>
+            <p className="text-secondary text-sm mb-4">{t('medicine.subtitle')}</p>
             <Button variant="primary" size="md" onClick={openAddModal} className="bg-accent-secondary">
-              + Add First Medicine
+              + {t('medicine.addMedicine')}
             </Button>
           </div>
         )}
@@ -145,11 +147,11 @@ export const MedicinesPage: React.FC = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingMed ? 'Edit Prescription' : 'Add New Medicine'}
+        title={editingMed ? t('medicine.editMedicine') : t('medicine.addMedicine')}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase text-secondary mb-1">Medicine Name</label>
+            <label className="block text-xs font-semibold uppercase text-secondary mb-1">{t('medicine.medicineName')}</label>
             <input
               type="text"
               required
@@ -162,7 +164,7 @@ export const MedicinesPage: React.FC = () => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase text-secondary mb-1">Dosage</label>
+              <label className="block text-xs font-semibold uppercase text-secondary mb-1">{t('medicine.dosage')}</label>
               <input
                 type="text"
                 required
@@ -173,7 +175,7 @@ export const MedicinesPage: React.FC = () => {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase text-secondary mb-1">Scheduled Time</label>
+              <label className="block text-xs font-semibold uppercase text-secondary mb-1">{t('medicine.scheduledTime')}</label>
               <input
                 type="text"
                 required
@@ -186,13 +188,13 @@ export const MedicinesPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase text-secondary mb-1">Frequency</label>
+            <label className="block text-xs font-semibold uppercase text-secondary mb-1">{t('medicine.frequency')}</label>
             <select
               value={frequency}
               onChange={(e) => setFrequency(e.target.value as any)}
               className="w-full p-3 rounded-2xl bg-sunken border border-hairline text-primary focus:outline-none"
             >
-              <option value="daily">Once Daily</option>
+              <option value="daily">Daily</option>
               <option value="twice_daily">Twice Daily</option>
               <option value="thrice_daily">Thrice Daily</option>
               <option value="weekly">Weekly</option>
@@ -201,21 +203,21 @@ export const MedicinesPage: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase text-secondary mb-1">Timing Preference</label>
+            <label className="block text-xs font-semibold uppercase text-secondary mb-1">{t('medicine.instructions')}</label>
             <select
               value={timingPref}
               onChange={(e) => setTimingPref(e.target.value as any)}
               className="w-full p-3 rounded-2xl bg-sunken border border-hairline text-primary focus:outline-none"
             >
-              <option value="after_food">After Food</option>
-              <option value="before_food">Before Food</option>
-              <option value="with_food">With Food</option>
+              <option value="after_food">{t('medicine.afterFood')}</option>
+              <option value="before_food">{t('medicine.beforeFood')}</option>
+              <option value="with_food">{t('medicine.withFood')}</option>
               <option value="anytime">Anytime</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase text-secondary mb-1">Doctor Notes / Reason</label>
+            <label className="block text-xs font-semibold uppercase text-secondary mb-1">{t('common.details')}</label>
             <textarea
               rows={2}
               value={notes}
@@ -227,10 +229,10 @@ export const MedicinesPage: React.FC = () => {
 
           <div className="flex items-center gap-3 pt-2">
             <Button variant="primary" size="md" fullWidth type="submit" className="bg-accent-secondary">
-              Save Medicine
+              {t('common.save')}
             </Button>
             <Button variant="secondary" size="md" fullWidth type="button" onClick={() => setIsModalOpen(false)}>
-              Cancel
+              {t('common.cancel')}
             </Button>
           </div>
         </form>

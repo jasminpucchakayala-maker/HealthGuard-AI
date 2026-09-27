@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Button } from '../components/common/Button';
 import { MedicineIcon, CaregiverIcon } from '../components/common/Icons';
 
@@ -10,6 +11,7 @@ export const AuthPage: React.FC = () => {
   const [otp, setOtp] = useState('123456');
   const [otpError, setOtpError] = useState('');
   const { loginWithOTP, selectRole } = useAuth();
+  const { t } = useLanguage();
 
   const handleSendOTP = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +26,7 @@ export const AuthPage: React.FC = () => {
     if (success) {
       setStep('role');
     } else {
-      setOtpError('Invalid OTP code. Please enter 123456 for demo.');
+      setOtpError(t('auth.invalidOtp'));
     }
   };
 
@@ -36,15 +38,15 @@ export const AuthPage: React.FC = () => {
           <div className="w-16 h-16 rounded-2xl bg-accent-primary/10 text-accent-primary flex items-center justify-center mx-auto mb-3 font-bold text-3xl">
             🛡️
           </div>
-          <h1 className="text-3xl font-heading font-bold text-primary">HealthGuard AI</h1>
-          <p className="text-sm text-secondary mt-1">Healthcare Support & Caregiver System</p>
+          <h1 className="text-3xl font-heading font-bold text-primary">{t('auth.title')}</h1>
+          <p className="text-sm text-secondary mt-1">{t('auth.subtitle')}</p>
         </div>
 
         {step === 'phone' && (
           <form onSubmit={handleSendOTP} className="space-y-5">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-secondary mb-2">
-                Enter Mobile Number
+                {t('auth.phonePlaceholder')}
               </label>
               <input
                 type="tel"
@@ -57,11 +59,11 @@ export const AuthPage: React.FC = () => {
             </div>
 
             <div className="p-3 bg-sunken rounded-2xl border border-hairline text-xs text-secondary">
-              💡 Demo authentication active. Use code <strong className="text-accent-secondary">123456</strong> on the next step.
+              💡 {t('auth.demoNotice')} (Code: <strong className="text-accent-secondary">123456</strong>)
             </div>
 
             <Button variant="primary" size="lg" fullWidth type="submit" className="bg-accent-secondary">
-              Send Verification OTP
+              {t('auth.loginButton')}
             </Button>
           </form>
         )}
@@ -71,14 +73,14 @@ export const AuthPage: React.FC = () => {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-xs font-semibold uppercase tracking-wider text-secondary">
-                  Enter 6-Digit OTP
+                  {t('auth.otpTitle')}
                 </label>
                 <button
                   type="button"
                   onClick={() => setStep('phone')}
                   className="text-xs text-accent-primary underline cursor-pointer"
                 >
-                  Change number ({phone})
+                  {t('common.edit')} ({phone})
                 </button>
               </div>
               <input
@@ -93,7 +95,7 @@ export const AuthPage: React.FC = () => {
             </div>
 
             <Button variant="primary" size="lg" fullWidth type="submit" className="bg-accent-primary">
-              Verify & Continue
+              {t('auth.verifyOtp')}
             </Button>
           </form>
         )}
@@ -101,8 +103,8 @@ export const AuthPage: React.FC = () => {
         {step === 'role' && (
           <div className="space-y-6">
             <div className="text-center">
-              <h2 className="text-xl font-heading font-bold text-primary">How will you use HealthGuard?</h2>
-              <p className="text-xs text-secondary mt-1">Select your primary role for this session</p>
+              <h2 className="text-xl font-heading font-bold text-primary">{t('auth.title')}</h2>
+              <p className="text-xs text-secondary mt-1">{t('auth.subtitle')}</p>
             </div>
 
             {/* Asymmetric Role Cards (Section 3.6 & 6) */}
@@ -119,9 +121,9 @@ export const AuthPage: React.FC = () => {
                     <MedicineIcon size={32} />
                   </div>
                   <div>
-                    <h3 className="font-heading font-bold text-lg text-primary">I am a Patient / Senior</h3>
+                    <h3 className="font-heading font-bold text-lg text-primary">{t('auth.patientRole')}</h3>
                     <p className="text-xs text-secondary leading-snug mt-1">
-                      Large buttons, easy voice reminders, water tracking, and 1-tap SOS emergency alert.
+                      {t('assistant.subtitle')}
                     </p>
                   </div>
                 </div>
@@ -139,9 +141,9 @@ export const AuthPage: React.FC = () => {
                     <CaregiverIcon size={32} />
                   </div>
                   <div>
-                    <h3 className="font-heading font-bold text-lg text-primary">I am a Caregiver / Family</h3>
+                    <h3 className="font-heading font-bold text-lg text-primary">{t('auth.caregiverRole')}</h3>
                     <p className="text-xs text-secondary leading-snug mt-1">
-                      Remote monitoring console, missed dose alerts, live location tracking, and care analytics.
+                      {t('caregiver.monitoredPatients')}
                     </p>
                   </div>
                 </div>

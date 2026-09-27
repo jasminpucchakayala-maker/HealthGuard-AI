@@ -10,17 +10,21 @@ import { NotificationPanel } from '../common/NotificationPanel';
 export const Header: React.FC = () => {
   const { userRole, switchRole } = useAuth();
   const { patient, caregiver, notifications } = useHealth();
-  const { t } = useLanguage();
+  const { t, formatDate } = useLanguage();
   const [showNotifs, setShowNotifs] = useState(false);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
   const isConnected = !!patient.caregiverId;
 
-  const todayStr = new Date().toLocaleDateString('en-US', {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-  });
+  const hour = new Date().getHours();
+  const greetingKey =
+    hour < 12
+      ? 'dashboard.greetingMorning'
+      : hour < 17
+      ? 'dashboard.greetingAfternoon'
+      : 'dashboard.greetingEvening';
+
+  const userName = userRole === 'patient' ? patient.name.split(' ')[0] : caregiver.name.split(' ')[0];
 
   return (
     <header className="sticky top-0 z-30 bg-surface/90 backdrop-blur-md border-b border-hairline px-4 py-3">
@@ -37,10 +41,10 @@ export const Header: React.FC = () => {
           <div>
             <div className="flex items-center gap-2">
               <h2 className="font-heading font-bold text-lg md:text-xl text-primary leading-tight">
-                {t('goodMorning')}, {userRole === 'patient' ? patient.name.split(' ')[0] : caregiver.name.split(' ')[0]} 👋
+                {t(greetingKey, { name: userName })} 👋
               </h2>
             </div>
-            <p className="text-xs text-secondary font-medium">{todayStr}</p>
+            <p className="text-xs text-secondary font-medium">{formatDate(new Date())}</p>
           </div>
         </div>
 
@@ -48,14 +52,14 @@ export const Header: React.FC = () => {
         {userRole === 'patient' && (
           <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-sunken border border-hairline text-xs">
             <CaregiverIcon size={16} className="text-accent-primary" />
-            <span className="text-secondary font-medium">Caregiver:</span>
+            <span className="text-secondary font-medium">{t('caregiver.primaryCaregiver')}:</span>
             {isConnected ? (
               <span className="flex items-center gap-1 font-semibold text-status-safe">
-                <SafeStatusIcon size={14} /> Connected ({patient.caregiverName})
+                <SafeStatusIcon size={14} /> {patient.caregiverName}
               </span>
             ) : (
               <span className="flex items-center gap-1 font-semibold text-status-warn">
-                <WarnStatusIcon size={14} /> Not Connected
+                <WarnStatusIcon size={14} /> {t('caregiver.statusAttention')}
               </span>
             )}
           </div>
@@ -70,9 +74,9 @@ export const Header: React.FC = () => {
           <button
             onClick={switchRole}
             className="px-2.5 py-1 text-xs font-semibold rounded-full bg-accent-primary/10 text-accent-primary border border-accent-primary/20 hover:bg-accent-primary/20 transition-colors cursor-pointer"
-            title="Click to toggle between Patient and Caregiver role for demo"
+            title={t('demo.quickRole')}
           >
-            Role: {userRole === 'patient' ? 'Patient 👤' : 'Caregiver 👨‍⚕️'}
+            {userRole === 'patient' ? `${t('header.patientView')} 👤` : `${t('header.caregiverView')} 👨‍⚕️`}
           </button>
 
           {/* Notification Bell */}
@@ -80,7 +84,8 @@ export const Header: React.FC = () => {
             <button
               onClick={() => setShowNotifs(!showNotifs)}
               className="p-2.5 rounded-full border border-hairline bg-surface text-primary hover:bg-sunken transition-colors relative flex items-center justify-center cursor-pointer"
-              aria-label="Notifications"
+              aria-label={t('header.notifications')}
+              title={t('header.notifications')}
             >
               <BellIcon size={20} />
               {unreadCount > 0 && (

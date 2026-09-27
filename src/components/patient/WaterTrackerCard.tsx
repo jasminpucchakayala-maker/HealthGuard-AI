@@ -21,13 +21,13 @@ export const WaterTrackerCard: React.FC = () => {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <WaterIcon size={24} className="text-accent-primary" />
-          <h3 className="font-heading font-semibold text-lg text-primary">{t('water')}</h3>
+          <h3 className="font-heading font-semibold text-lg text-primary">{t('water.title')}</h3>
         </div>
         <button
           onClick={() => setShowSettings(!showSettings)}
           className="text-xs text-secondary hover:text-primary transition-colors underline"
         >
-          {showSettings ? 'Close' : 'Settings'}
+          {showSettings ? t('common.close') : t('settings.title')}
         </button>
       </div>
 
@@ -62,13 +62,13 @@ export const WaterTrackerCard: React.FC = () => {
             </svg>
             <div className="absolute flex flex-col items-center justify-center text-center">
               <span className="text-xl font-bold font-heading text-primary">{waterLog.consumedGlasses}/{waterLog.targetGlasses}</span>
-              <span className="text-[10px] text-muted uppercase tracking-wider">Glasses</span>
+              <span className="text-[10px] text-muted uppercase tracking-wider">{t('water.currentIntake')}</span>
             </div>
           </div>
 
           <div className="flex-1 flex flex-col justify-center">
             <p className="text-xs text-secondary mb-2">
-              Goal: {waterLog.targetGlasses} glasses daily. Last logged: {waterLog.lastLogTimestamp || 'Earlier'}.
+              {t('water.dailyGoal')}: {waterLog.targetGlasses} | {waterLog.lastLogTimestamp || t('common.none')}
             </p>
             <Button
               variant="primary"
@@ -77,7 +77,7 @@ export const WaterTrackerCard: React.FC = () => {
               disabled={waterLog.consumedGlasses >= waterLog.targetGlasses}
               className="bg-accent-primary hover:bg-accent-primary/90 text-white font-medium self-start"
             >
-              + {t('addGlass')}
+              {t('water.addGlass')}
             </Button>
           </div>
         </div>
@@ -85,7 +85,7 @@ export const WaterTrackerCard: React.FC = () => {
         /* Interval Settings Panel */
         <div className="p-3 bg-sunken rounded-2xl border border-hairline text-xs space-y-3">
           <div className="flex items-center justify-between">
-            <span className="font-semibold text-primary">Water Reminders</span>
+            <span className="font-semibold text-primary">{t('water.reminderText')}</span>
             <input
               type="checkbox"
               checked={waterLog.enabled}
@@ -95,7 +95,7 @@ export const WaterTrackerCard: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-secondary mb-1">Reminder Interval</label>
+            <label className="block text-secondary mb-1">{t('settings.notifications')}</label>
             <select
               value={waterLog.intervalMinutes}
               onChange={(e) => updateWaterSettings({ intervalMinutes: Number(e.target.value) })}
@@ -108,7 +108,7 @@ export const WaterTrackerCard: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-secondary mb-1">Daily Target (Glasses)</label>
+            <label className="block text-secondary mb-1">{t('water.dailyGoal')}</label>
             <input
               type="number"
               min={4}

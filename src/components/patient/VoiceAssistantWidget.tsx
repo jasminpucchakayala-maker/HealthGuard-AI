@@ -27,23 +27,23 @@ export const VoiceAssistantWidget: React.FC<{ isCompact?: boolean }> = ({ isComp
     const lower = input.toLowerCase();
     let reply = '';
 
-    if (lower.includes('next') || lower.includes('medicine') || lower.includes('తరువాత') || lower.includes('दवा')) {
+    if (lower.includes('next') || lower.includes('medicine') || lower.includes('తరువాత') || lower.includes('మందు') || lower.includes('दवा') || lower.includes('अगली')) {
       const nextMed = todayLogs.find((l) => l.status === 'pending');
       if (nextMed) {
-        reply = `Your next medicine is ${nextMed.medicineName} ${nextMed.dosage} scheduled for ${nextMed.scheduledTime}.`;
+        reply = t('assistant.intentNextMed', { name: nextMed.medicineName, dosage: nextMed.dosage, time: nextMed.scheduledTime });
       } else {
-        reply = 'You have taken all your scheduled medicines for today! Excellent job.';
+        reply = t('assistant.intentNextMedEmpty');
       }
-    } else if (lower.includes('water') || lower.includes('నీరు') || lower.includes('पानी')) {
+    } else if (lower.includes('water') || lower.includes('నీరు') || lower.includes('నీళ్లు') || lower.includes('पानी') || lower.includes('जल')) {
       addWaterGlass();
-      reply = 'I logged one glass of water for you. Remember to stay hydrated throughout the day!';
-    } else if (lower.includes('sos') || lower.includes('emergency') || lower.includes('అత్యవసర') || lower.includes('आपत्कालीन')) {
+      reply = t('assistant.intentWaterLogged');
+    } else if (lower.includes('sos') || lower.includes('emergency') || lower.includes('అత్యవసర') || lower.includes('आपत्कालीन') || lower.includes('మదత్')) {
       triggerSOS('voice_trigger');
-      reply = 'Emergency SOS has been activated. Emergency alert sent to your caregiver!';
-    } else if (lower.includes('call') || lower.includes('caregiver') || lower.includes('రవి') || lower.includes('कॉल')) {
-      reply = `Connecting call to your caregiver ${patient.caregiverName || 'Ravi'} at ${patient.caregiverPhone}...`;
+      reply = t('assistant.intentSosTriggered');
+    } else if (lower.includes('call') || lower.includes('caregiver') || lower.includes('రవి') || lower.includes('కాల్') || lower.includes('कॉल')) {
+      reply = t('assistant.intentCallingCaregiver', { name: patient.caregiverName || 'Ravi', phone: patient.caregiverPhone || '9876543210' });
     } else {
-      reply = `I heard: "${input}". How can I help you with your medicines, water intake, or emergency contacts?`;
+      reply = t('assistant.intentFallback', { input });
     }
 
     setResponse(reply);
@@ -61,7 +61,7 @@ export const VoiceAssistantWidget: React.FC<{ isCompact?: boolean }> = ({ isComp
       const recognition = new SpeechRecognition();
       if (language === 'te') recognition.lang = 'te-IN';
       else if (language === 'hi') recognition.lang = 'hi-IN';
-      else recognition.lang = 'en-IN';
+      else recognition.lang = 'en-US';
 
       recognition.onresult = (event: any) => {
         const text = event.results[0][0].transcript;
@@ -72,18 +72,16 @@ export const VoiceAssistantWidget: React.FC<{ isCompact?: boolean }> = ({ isComp
 
       recognition.onerror = () => {
         setIsListening(false);
-        // Fallback demo string if mic error
-        const fallbackText = language === 'te' ? 'నా తరువాత మందు ఏమిటి' : 'What is my next medicine?';
+        const fallbackText = language === 'te' ? 'నా తరువాత మందు ఏమిటి' : language === 'hi' ? 'मेरी अगली दवा क्या है' : 'What is my next medicine?';
         setTranscript(fallbackText);
         processIntent(fallbackText);
       };
 
       recognition.start();
     } else {
-      // Browser fallback demo simulation
       setTimeout(() => {
         setIsListening(false);
-        const sampleCmd = 'What is my next medicine?';
+        const sampleCmd = language === 'te' ? 'నా తరువాత మందు ఏమిటి' : language === 'hi' ? 'मेरी अगली दवा क्या है' : 'What is my next medicine?';
         setTranscript(sampleCmd);
         processIntent(sampleCmd);
       }, 1500);
@@ -94,7 +92,6 @@ export const VoiceAssistantWidget: React.FC<{ isCompact?: boolean }> = ({ isComp
     <div className="bg-surface border border-hairline rounded-[24px] p-5 shadow-xs">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          {/* Calmer mic listening pulse (Section 14 & 3.5) */}
           <motion.button
             animate={isListening ? { scale: [1, 1.1, 1] } : { scale: 1 }}
             transition={isListening ? { duration: 1.2, repeat: Infinity, ease: 'easeInOut' } : {}}
@@ -102,27 +99,27 @@ export const VoiceAssistantWidget: React.FC<{ isCompact?: boolean }> = ({ isComp
             className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
               isListening ? 'bg-accent-secondary text-white' : 'bg-accent-primary/10 text-accent-primary hover:bg-accent-primary/20'
             }`}
-            title="Click to talk to Voice Assistant"
+            title={t('assistant.tapToSpeak')}
           >
             <VoiceIcon size={24} />
           </motion.button>
           <div>
-            <h3 className="font-heading font-semibold text-lg text-primary">{t('voiceAssistant')}</h3>
+            <h3 className="font-heading font-semibold text-lg text-primary">{t('assistant.title')}</h3>
             <p className="text-xs text-secondary">
-              {isListening ? 'Listening to your voice...' : 'Tap the mic and speak (e.g., "What is my next medicine?")'}
+              {isListening ? t('assistant.listening') : t('assistant.promptExample')}
             </p>
           </div>
         </div>
 
         <Button variant="secondary" size="sm" onClick={startListening}>
-          {isListening ? 'Listening...' : 'Talk'}
+          {isListening ? t('assistant.listening') : t('assistant.tapToSpeak')}
         </Button>
       </div>
 
       {/* Transcript & Response Area */}
       {transcript && (
         <div className="p-3 bg-sunken rounded-2xl border border-hairline mb-3 text-sm">
-          <p className="text-xs font-semibold text-accent-secondary mb-1">You said:</p>
+          <p className="text-xs font-semibold text-accent-secondary mb-1">{t('assistant.youSaid')}</p>
           <input
             type="text"
             value={transcript}
@@ -135,7 +132,10 @@ export const VoiceAssistantWidget: React.FC<{ isCompact?: boolean }> = ({ isComp
           {response && (
             <div className="pt-2 border-t border-hairline flex items-start gap-2">
               <span className="text-base">🤖</span>
-              <p className="text-primary font-medium">{response}</p>
+              <div>
+                <p className="text-xs font-semibold text-accent-primary">{t('assistant.aiReplied')}</p>
+                <p className="text-primary font-medium">{response}</p>
+              </div>
             </div>
           )}
         </div>
@@ -145,28 +145,28 @@ export const VoiceAssistantWidget: React.FC<{ isCompact?: boolean }> = ({ isComp
       {!isCompact && (
         <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-hairline">
           <button
-            onClick={() => processIntent('What is my next medicine?')}
+            onClick={() => processIntent(language === 'te' ? 'నా తరువాత మందు ఏమిటి' : 'What is my next medicine?')}
             className="px-3 py-1.5 rounded-xl bg-sunken hover:bg-surface border border-hairline text-xs font-medium text-primary flex items-center gap-1.5 transition-colors"
           >
-            <MedicineIcon size={16} /> Next Medicine
+            <MedicineIcon size={16} /> {t('medicine.nextDose')}
           </button>
           <button
-            onClick={() => processIntent('Log one glass of water')}
+            onClick={() => processIntent(language === 'te' ? 'నీళ్లు తాగాను' : 'Log one glass of water')}
             className="px-3 py-1.5 rounded-xl bg-sunken hover:bg-surface border border-hairline text-xs font-medium text-primary flex items-center gap-1.5 transition-colors"
           >
-            <WaterIcon size={16} /> Drink Water
+            <WaterIcon size={16} /> {t('water.addGlass')}
           </button>
           <button
-            onClick={() => processIntent('Call caregiver')}
+            onClick={() => processIntent(language === 'te' ? 'కేర్‌గివర్‌కి కాల్ చేయి' : 'Call caregiver')}
             className="px-3 py-1.5 rounded-xl bg-sunken hover:bg-surface border border-hairline text-xs font-medium text-primary flex items-center gap-1.5 transition-colors"
           >
-            <PhoneIcon size={16} /> Call Caregiver
+            <PhoneIcon size={16} /> {t('caregiver.quickCall')}
           </button>
           <button
-            onClick={() => processIntent('Trigger emergency SOS')}
+            onClick={() => processIntent('SOS')}
             className="px-3 py-1.5 rounded-xl bg-status-danger/10 hover:bg-status-danger/20 border border-status-danger/30 text-xs font-medium text-status-danger flex items-center gap-1.5 transition-colors"
           >
-            <SOSIcon size={16} /> Send SOS
+            <SOSIcon size={16} /> {t('sos.title')}
           </button>
         </div>
       )}

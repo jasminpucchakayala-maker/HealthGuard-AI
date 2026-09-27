@@ -48,7 +48,7 @@ export const SOSButton: React.FC<{ isFloating?: boolean }> = ({ isFloating = tru
           aria-label="Trigger Emergency SOS"
         >
           <SOSIcon size={32} className="mb-0.5 text-white" />
-          <span className="font-heading font-bold text-xs tracking-wider uppercase">{t('sos')}</span>
+          <span className="font-heading font-bold text-xs tracking-wider uppercase">{t('sos.title')}</span>
         </motion.button>
       </div>
 
@@ -73,10 +73,10 @@ export const SOSButton: React.FC<{ isFloating?: boolean }> = ({ isFloating = tru
                 <SOSIcon size={36} />
               </div>
               <h3 className="text-2xl font-heading font-bold text-primary mb-2">
-                Emergency Confirmation
+                {t('sos.title')}
               </h3>
               <p className="text-secondary text-base mb-6 leading-relaxed">
-                Are you sure you need emergency assistance? Your location and emergency alert will be sent immediately to your caregiver and local services.
+                {t('sos.pressToTrigger')}
               </p>
 
               <div className="flex flex-col gap-3">
@@ -87,7 +87,7 @@ export const SOSButton: React.FC<{ isFloating?: boolean }> = ({ isFloating = tru
                   onClick={handleSOSConfirm}
                   disabled={isActivating}
                 >
-                  {isActivating ? 'Activating Emergency...' : '🚨 Yes, Send SOS Alert'}
+                  {isActivating ? t('common.loading') : `🚨 ${t('sos.triggerButton')}`}
                 </Button>
                 <Button
                   variant="secondary"
@@ -95,7 +95,7 @@ export const SOSButton: React.FC<{ isFloating?: boolean }> = ({ isFloating = tru
                   fullWidth
                   onClick={() => setShowConfirmModal(false)}
                 >
-                  Cancel
+                  {t('sos.cancelSos')}
                 </Button>
               </div>
             </motion.div>

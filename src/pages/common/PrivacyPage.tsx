@@ -1,10 +1,12 @@
 import React from 'react';
 import { useHealth } from '../../context/HealthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Header } from '../../components/layout/Header';
 import { Link } from 'react-router-dom';
 
 export const PrivacyPage: React.FC = () => {
   const { permissions, togglePermission } = useHealth();
+  const { t } = useLanguage();
 
   return (
     <div className="min-h-screen bg-canvas text-primary pb-12">
@@ -13,24 +15,24 @@ export const PrivacyPage: React.FC = () => {
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-heading font-bold text-primary">Privacy Policy & Permissions</h1>
-            <p className="text-secondary text-sm mt-1">HealthGuard AI Privacy Commitments & Device Controls</p>
+            <h1 className="text-3xl font-heading font-bold text-primary">{t('privacy.title')}</h1>
+            <p className="text-secondary text-sm mt-1">{t('privacy.section1Title')}</p>
           </div>
           <Link to="/settings" className="text-xs text-accent-primary font-bold hover:underline">
-            ← Back to Settings
+            ← {t('common.back')}
           </Link>
         </div>
 
         {/* Live Device Permissions Controls (Tell 27) */}
         <div className="bg-surface border border-hairline rounded-[24px] p-6 shadow-xs space-y-4">
           <h2 className="font-heading font-bold text-xl text-primary border-b border-hairline pb-2">
-            Live Permission Controls
+            {t('privacy.title')}
           </h2>
 
           <div className="flex items-center justify-between py-2 border-b border-hairline">
             <div>
-              <span className="font-semibold text-sm text-primary block">GPS Location Sharing</span>
-              <span className="text-xs text-secondary">Share live location with linked caregiver during Emergency SOS.</span>
+              <span className="font-semibold text-sm text-primary block">{t('sos.locationShared')}</span>
+              <span className="text-xs text-secondary">{t('sos.alertDescription')}</span>
             </div>
             <input
               type="checkbox"
@@ -42,8 +44,8 @@ export const PrivacyPage: React.FC = () => {
 
           <div className="flex items-center justify-between py-2 border-b border-hairline">
             <div>
-              <span className="font-semibold text-sm text-primary block">Microphone / Voice Recognition</span>
-              <span className="text-xs text-secondary">Allow Web Speech API & voice note recording.</span>
+              <span className="font-semibold text-sm text-primary block">{t('assistant.title')}</span>
+              <span className="text-xs text-secondary">{t('assistant.subtitle')}</span>
             </div>
             <input
               type="checkbox"
@@ -55,8 +57,8 @@ export const PrivacyPage: React.FC = () => {
 
           <div className="flex items-center justify-between py-2 border-b border-hairline">
             <div>
-              <span className="font-semibold text-sm text-primary block">Browser Push Notifications</span>
-              <span className="text-xs text-secondary">Receive medicine reminders and caregiver alert popups.</span>
+              <span className="font-semibold text-sm text-primary block">{t('settings.notifications')}</span>
+              <span className="text-xs text-secondary">{t('settings.notifications')}</span>
             </div>
             <input
               type="checkbox"
@@ -68,8 +70,8 @@ export const PrivacyPage: React.FC = () => {
 
           <div className="flex items-center justify-between py-2">
             <div>
-              <span className="font-semibold text-sm text-primary block">Anonymous Health Analytics</span>
-              <span className="text-xs text-secondary">Share adherence stats for care improvement.</span>
+              <span className="font-semibold text-sm text-primary block">{t('analytics.title')}</span>
+              <span className="text-xs text-secondary">{t('analytics.title')}</span>
             </div>
             <input
               type="checkbox"
@@ -82,18 +84,10 @@ export const PrivacyPage: React.FC = () => {
 
         {/* Privacy Policy Text */}
         <div className="bg-surface border border-hairline rounded-[24px] p-6 shadow-xs space-y-4 text-sm text-secondary leading-relaxed">
-          <h3 className="font-heading font-bold text-lg text-primary">Data Protection & Privacy Policy</h3>
-          <p>
-            HealthGuard AI values your privacy and the confidentiality of personal health information. All medicine schedules, logs, and emergency contacts are encrypted locally on your device.
-          </p>
-          <h4 className="font-bold text-primary">1. How We Use Data</h4>
-          <p>
-            Your health adherence data is shared solely with your explicitly linked caregiver (e.g. family members or designated doctors). We never sell or share patient data with third-party advertisers.
-          </p>
-          <h4 className="font-bold text-primary">2. Emergency Location Access</h4>
-          <p>
-            Location data is accessed strictly when an Emergency SOS or Fall Simulation is activated to assist first responders and family members in locating you.
-          </p>
+          <h3 className="font-heading font-bold text-lg text-primary">{t('privacy.title')}</h3>
+          <p>{t('privacy.section1Text')}</p>
+          <h4 className="font-bold text-primary">{t('privacy.section2Title')}</h4>
+          <p>{t('privacy.section2Text')}</p>
         </div>
       </main>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHealth } from '../../context/HealthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { Header } from '../../components/layout/Header';
 import { BottomNav } from '../../components/layout/BottomNav';
 import { Button } from '../../components/common/Button';
@@ -7,6 +8,7 @@ import { SafeStatusIcon, WarnStatusIcon } from '../../components/common/Icons';
 
 export const CaregiverConnectPage: React.FC = () => {
   const { patient, caregiver, connectionRequests, sendCaregiverConnectionRequest } = useHealth();
+  const { t } = useLanguage();
   const [name, setName] = useState('Ravi Kumar');
   const [phone, setPhone] = useState('+91 98765 43211');
   const [relationship, setRelationship] = useState('Son');
@@ -26,8 +28,8 @@ export const CaregiverConnectPage: React.FC = () => {
 
       <main className="max-w-4xl mx-auto px-4 py-6">
         <div className="mb-6">
-          <h2 className="text-3xl font-heading font-bold text-primary">My Caregiver</h2>
-          <p className="text-secondary text-sm mt-1">Connect your family member or doctor for remote health monitoring.</p>
+          <h2 className="text-3xl font-heading font-bold text-primary">{t('caregiver.title')}</h2>
+          <p className="text-secondary text-sm mt-1">{t('caregiver.monitoredPatients')}</p>
         </div>
 
         {isConnected ? (
@@ -38,19 +40,19 @@ export const CaregiverConnectPage: React.FC = () => {
               </div>
               <div>
                 <span className="px-3 py-1 rounded-full bg-status-safe/10 text-status-safe font-semibold text-xs border border-status-safe/30 inline-flex items-center gap-1 mb-1">
-                  <SafeStatusIcon size={14} /> Connected Caregiver
+                  <SafeStatusIcon size={14} /> {t('caregiver.patientStatus')}
                 </span>
                 <h3 className="text-2xl font-heading font-bold text-primary">{patient.caregiverName}</h3>
-                <p className="text-sm text-secondary">Relationship: {caregiver.relationship} • {patient.caregiverPhone}</p>
+                <p className="text-sm text-secondary">{caregiver.relationship} • {patient.caregiverPhone}</p>
               </div>
             </div>
 
             <div className="p-4 rounded-2xl bg-sunken border border-hairline text-xs text-secondary space-y-2">
-              <p className="font-semibold text-primary">Monitoring Permissions Active:</p>
+              <p className="font-semibold text-primary">{t('caregiver.statusNormal')}:</p>
               <ul className="list-disc list-inside space-y-1">
-                <li>Daily medicine adherence & skipped dose alerts</li>
-                <li>Live location during emergency SOS alerts</li>
-                <li>Hydration progress updates</li>
+                <li>{t('medicine.title')}</li>
+                <li>{t('sos.title')}</li>
+                <li>{t('water.title')}</li>
               </ul>
             </div>
           </div>
@@ -59,19 +61,19 @@ export const CaregiverConnectPage: React.FC = () => {
             <div className="flex items-center gap-3 mb-4">
               <WarnStatusIcon size={28} className="text-status-warn" />
               <div>
-                <h3 className="text-xl font-heading font-bold text-primary">No Caregiver Connected</h3>
-                <p className="text-xs text-secondary">Send a connection request to link your caregiver.</p>
+                <h3 className="text-xl font-heading font-bold text-primary">{t('caregiver.statusAttention')}</h3>
+                <p className="text-xs text-secondary">{t('caregiver.enterPatientCode')}</p>
               </div>
             </div>
 
             {isSent ? (
               <div className="p-4 rounded-2xl bg-status-safe/10 border border-status-safe/30 text-status-safe text-sm font-semibold text-center">
-                🎉 Connection request sent to {name} ({phone})! They can accept it from their Caregiver Dashboard.
+                🎉 {t('caregiver.connectionSuccess')} ({name} - {phone})
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-secondary mb-1">Caregiver Full Name</label>
+                  <label className="block text-xs font-semibold uppercase text-secondary mb-1">{t('caregiver.patientName')}</label>
                   <input
                     type="text"
                     required
@@ -83,7 +85,7 @@ export const CaregiverConnectPage: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold uppercase text-secondary mb-1">Mobile Number</label>
+                    <label className="block text-xs font-semibold uppercase text-secondary mb-1">{t('profile.phone')}</label>
                     <input
                       type="tel"
                       required
@@ -93,7 +95,7 @@ export const CaregiverConnectPage: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold uppercase text-secondary mb-1">Relationship</label>
+                    <label className="block text-xs font-semibold uppercase text-secondary mb-1">{t('common.details')}</label>
                     <input
                       type="text"
                       required
@@ -106,7 +108,7 @@ export const CaregiverConnectPage: React.FC = () => {
                 </div>
 
                 <Button variant="primary" size="lg" fullWidth type="submit" className="bg-accent-primary">
-                  Send Caregiver Request
+                  {t('caregiver.connectButton')}
                 </Button>
               </form>
             )}
@@ -116,11 +118,11 @@ export const CaregiverConnectPage: React.FC = () => {
         {/* Pending Requests List */}
         {connectionRequests.length > 0 && (
           <div className="bg-surface border border-hairline rounded-[24px] p-6">
-            <h4 className="font-heading font-bold text-lg text-primary mb-3">Recent Requests</h4>
+            <h4 className="font-heading font-bold text-lg text-primary mb-3">{t('dashboard.recentActivity')}</h4>
             {connectionRequests.map((req) => (
               <div key={req.id} className="p-3 rounded-2xl bg-sunken border border-hairline flex items-center justify-between text-xs">
                 <div>
-                  <span className="font-bold text-primary">{req.patientName}</span> request to{' '}
+                  <span className="font-bold text-primary">{req.patientName}</span> {'->'} {' '}
                   <span className="font-semibold text-accent-secondary">{req.caregiverPhone}</span>
                 </div>
                 <span className="px-2.5 py-1 rounded-full bg-status-warn/20 text-status-warn font-semibold uppercase">
