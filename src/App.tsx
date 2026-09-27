@@ -113,7 +113,7 @@ export function App() {
       <LanguageProvider>
         <AuthProvider>
           <HealthProvider>
-            <Router>
+            <Router basename={import.meta.env.BASE_URL}>
               <AppRoutes />
               <DemoPanel />
             </Router>
